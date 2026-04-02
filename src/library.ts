@@ -1,6 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Userdetails } from './entity';
 @Entity('checking')
 export class books {
   @PrimaryGeneratedColumn()
@@ -21,4 +28,10 @@ export class books {
   @Column()
   @IsOptional()
   description: string;
+  @ManyToOne(() => Userdetails, (user) => user.book, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'userId' })
+  user: Userdetails;
 }

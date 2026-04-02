@@ -10,20 +10,26 @@ import {
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { books } from './library';
-import { ApiBody, ApiOperation } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiProperty } from '@nestjs/swagger';
+import { Userdetails } from './entity';
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
-  @ApiOperation({ summary: 'Get all books' })
+  @Post('/user')
+  @ApiOperation({ summary: 'create a new user' })
+  async saveuser(@Body() dto: Userdetails) {
+    return await this.appService.saveuser(dto);
+  }
   @Get()
+  @ApiOperation({ summary: 'Get all books' })
   async get() {
     return await this.appService.findall();
   }
   @ApiOperation({ summary: 'Insert a new book' })
   @ApiBody({ type: books })
-  @Post('/inserting')
-  async put(@Body() dto: books) {
-    return await this.appService.saveall(dto);
+  @Post('/inserting:id')
+  async put(@Param('id') id: number, @Body() dto: books) {
+    return await this.appService.saveall(dto, id);
   }
   @ApiOperation({ summary: 'Update an existing book' })
   @Put('/update/:id')
